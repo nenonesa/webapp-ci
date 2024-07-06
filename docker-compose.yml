@@ -1,0 +1,50 @@
+version: "3.8"
+services:
+  postgres-db:
+    image: postgres:latest
+    container_name: postgres-db
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_DB=mydatabase
+    volumes:
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+  backend:
+    build: ./backend
+    image: webapp-backend
+    container_name: backend
+    ports:
+      - 5050:5050
+    depends_on:
+      - postgres-db
+    deploy:
+      resources:
+        limits:
+          memory: 15M
+          cpus: "0.5"
+        reservations:
+          memory: 10M
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
+        window: 30s
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile-multi-stage
+    image: webapp-frontend
+    container_name: frontend
+    ports:
+      - 3000:80
+    depends_on:
+      - backend
+
+
+
+# docker run --name postgress-db -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_DB=mydatabase -v ${PWD}/init.sql:/docker-entrypoint-initdb.d/init.sql --network=webapp-network postgres
+# docker run --rm --network=webapp-network -p 5050:5050 webapp-backend
+# docker run --rm --network=webapp-network -p 3000:80 webapp-frontend
