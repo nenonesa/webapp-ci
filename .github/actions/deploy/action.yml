@@ -14,5 +14,6 @@ runs:
   using: "composite"
   steps:
     - name: Deploy Application
+      shell: bash
       run: |
         kubectl set image deployment/${{ inputs.deployment_name }} ${{ inputs.container_name }}=${{ inputs.image_tag }}

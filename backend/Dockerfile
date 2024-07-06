@@ -20,6 +20,8 @@ COPY .env ./
 
 
 
+
+
 EXPOSE 5050
 
 CMD [ "npm", "start" ]
