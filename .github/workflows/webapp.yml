@@ -46,8 +46,15 @@ jobs:
     runs-on: self-hosted
     needs: [build-frontend, build-backend]
     steps:
-      - name: Test Step
-        run: echo "Test step"
+      - name: Deploy Frontend to PROD
+        run: |
+          kubectl set image deployment/frontend-deployment frontend=nenonesa/webapp-frontend:latest
+          kubectl rollout restart deployment/frontend-deployment
+      - name: Deploy Backend to PROD
+        run: |
+          kubectl set image deployment/backend-deployment backend=nenonesa/webapp-backend:latest
+          kubectl rollout restart deployment/backend-deployment
+          
   api-tests-prod:
     name: API Tests on PROD
     runs-on: self-hosted
