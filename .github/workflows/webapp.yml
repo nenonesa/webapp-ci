@@ -45,14 +45,14 @@ jobs:
             backend:
               - 'backend/**'
       - name: Docker login
-        if: steps.filter.outputs.frontend == 'true'
+        if: steps.filter.outputs.backend == 'true'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           logout: false
       - name: Build and Push docker image
-        if: steps.filter.outputs.frontend == 'true'
+        if: steps.filter.outputs.backend == 'true'
         run: |
             docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/webapp-backend:latest ./backend
             docker push ${{ secrets.DOCKERHUB_USERNAME }}/webapp-backend:latest
@@ -62,11 +62,24 @@ jobs:
     runs-on: self-hosted
     needs: [build-frontend, build-backend]
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Path filter
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+            backend:
+              - 'backend/**'
       - name: Deploy Frontend to PROD
+        if: steps.filter.outputs.frontend == 'true'
         run: |
           kubectl set image deployment/frontend-deployment frontend=nenonesa/webapp-frontend:latest
           kubectl rollout restart deployment/frontend-deployment
       - name: Deploy Backend to PROD
+        if: steps.filter.outputs.backend == 'true'
         run: |
           kubectl set image deployment/backend-deployment backend=nenonesa/webapp-backend:latest
           kubectl rollout restart deployment/backend-deployment
@@ -76,7 +89,17 @@ jobs:
     runs-on: self-hosted
     needs: [deploy-prod]
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Path filter
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
       - name: Run API tests on PROD
+        if: steps.filter.outputs.backend == 'true'
         run: |
           docker pull nenonesa/api-tests:latest
           docker run --rm --network=host --name api-tests-prod nenonesa/api-tests:latest cucumber PLATFORM=PRD
