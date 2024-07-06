@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           logout: false
       - name: Build and Push docker image
-        run:
+        run: |
             docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/webapp-frontend:latest ./frontend
             docker push ${{ secrets.DOCKERHUB_USERNAME }}/webapp-frontend:latest
   build-backend:
@@ -37,7 +37,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           logout: false
       - name: Build and Push docker image
-        run:
+        run: |
             docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/webapp-backend:latest ./backend
             docker push ${{ secrets.DOCKERHUB_USERNAME }}/webapp-backend:latest
       
