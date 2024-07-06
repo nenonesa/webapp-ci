@@ -8,26 +8,31 @@ on:
 jobs:
   build-frontend:
     name: Build Frontend
+    runs-on: self-hosted
     steps:
       - name: Test Step
         run: echo "Test step"
   build-backend:
     name: Build Backend
+    runs-on: self-hosted
     steps:
       - name: Test Step
         run: echo "Test step"
   deploy-prd:
     name: Deploy to PROD (K8S)
+    runs-on: self-hosted
     steps:
       - name: Test Step
         run: echo "Test step"
   api-tests-prd:
     name: API Tests on PROD
+    runs-on: self-hosted
     steps:
       - name: Test Step
         run: echo "Test step"
   rollback-backend:
     name: Backend rollback on PROD
+    runs-on: self-hosted
     steps:
       - name: Test Step
         run: echo "Test step"
