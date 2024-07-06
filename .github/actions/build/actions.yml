@@ -1,0 +1,31 @@
+name: Build docker image for application
+description: "Action to build docker image for our webapp applications"
+inputs:
+  image_tag:
+    required: true
+    description: "Full docker image tag for the application image"
+  application:
+    required: true
+    description: "Name of the applications as it is being used as path for finding dockerfiles"
+  dockerhub_username:
+    required: true
+    description: "..."
+  dockerhub_password:
+    required: true
+    description: "..."
+
+runs:
+  using: "composite"
+  steps:
+    - name: Docker login
+      uses: docker/login-action@v3
+      with:
+          username: ${{ inputs.dockerhub_username }}
+          password: ${{ inputs.dockerhub_password }}
+          logout: false
+    - name: Build and Push docker image
+      shell: bash
+      run: |
+        docker build -t ${{ inputs.image_tag }} ./${{ inputs.application }}
+        docker push ${{ inputs.image_tag }}
+        
