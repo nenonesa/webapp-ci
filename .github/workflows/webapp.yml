@@ -10,14 +10,37 @@ jobs:
     name: Build Frontend
     runs-on: self-hosted
     steps:
-      - name: Test Step
-        run: echo "Test step"
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Docker login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          logout: false
+      - name: Build and Push docker image
+        run:
+            docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/webapp-frontend:latest ./frontend
+            docker push ${{ secrets.DOCKERHUB_USERNAME }}/webapp-frontend:latest
   build-backend:
     name: Build Backend
     runs-on: self-hosted
     steps:
       - name: Test Step
         run: echo "Test step"
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Docker login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          logout: false
+      - name: Build and Push docker image
+        run:
+            docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/webapp-backend:latest ./backend
+            docker push ${{ secrets.DOCKERHUB_USERNAME }}/webapp-backend:latest
+      
   deploy-prod:
     name: Deploy to PROD (K8S)
     runs-on: self-hosted
