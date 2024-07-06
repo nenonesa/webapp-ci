@@ -103,10 +103,12 @@ jobs:
         run: |
           docker pull nenonesa/api-tests:latest
           docker run --rm --network=host --name api-tests-prod nenonesa/api-tests:latest cucumber PLATFORM=PRD
+          
   rollback-backend:
     name: Backend rollback on PROD
     needs: [api-tests-prod]
     runs-on: self-hosted
+    if: $${{ always() && contains(needs.*.result, 'failure') }}
     steps:
       - name: Rollback for the Backend (PROD)
         run: |

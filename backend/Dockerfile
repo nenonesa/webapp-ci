@@ -6,6 +6,8 @@ RUN npm install
 COPY index.js ./
 COPY .env ./
 
+
+
 EXPOSE 5050
 
 CMD [ "npm", "start" ]
