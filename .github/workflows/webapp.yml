@@ -68,13 +68,13 @@ jobs:
       - name: Deploy Frontend to PROD
         uses: ./.github/actions/deploy
         with:
-          image_tag: ${{ secrets.DOCKERHUB_USERNAME }} /webapp-frontend:$GITHUB_SHA
+          image_tag: ${{ secrets.DOCKERHUB_USERNAME }}/webapp-frontend:$GITHUB_SHA
           deployment_name: frontend-deployment
           container_name: frontend   
       - name: Deploy Backend to PROD
         uses: ./.github/actions/deploy
         with:
-          image_tag: ${{ secrets.DOCKERHUB_USERNAME }} /webapp-backend:$GITHUB_SHA
+          image_tag: ${{ secrets.DOCKERHUB_USERNAME }}/webapp-backend:$GITHUB_SHA
           deployment_name: backend-deployment
           container_name: backend       
       
