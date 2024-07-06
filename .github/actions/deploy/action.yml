@@ -1,0 +1,18 @@
+name: Perform application deployment
+description: "..."
+inputs:
+  image_tag:
+    required: true
+    description: '..'
+  deployment_name:
+    required: true
+    description: '..'
+  container_name:
+    required: true
+    description: '...'
+runs: 
+  using: "composite"
+  steps:
+    - name: Deploy Application
+      run: |
+        kubectl set image deployment/${{ inputs.deployment_name }} ${{ inputs.container_name }}=${{ inputs.image_tag }}

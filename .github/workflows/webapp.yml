@@ -66,13 +66,18 @@ jobs:
             backend:
               - 'backend/**'
       - name: Deploy Frontend to PROD
-        if: steps.filters.outputs.frontend == 'true'
-        run: |
-          kubectl set image deployment/frontend-deployment frontend=nenonesa/webapp-frontend:$GITHUB_SHA
+        uses: ./github/actions/deploy
+        with:
+          image_tag: ${{ secrets.DOCKERHUB_USERNAME }} /webapp-frontend:$GITHUB_SHA
+          deployment_name: frontend-deployment
+          container_name: frontend   
       - name: Deploy Backend to PROD
-        if: steps.filters.outputs.backend == 'true'
-        run: |
-          kubectl set image deployment/backend-deployment backend=nenonesa/webapp-backend:$GITHUB_SHA
+        uses: ./github/actions/deploy
+        with:
+          image_tag: ${{ secrets.DOCKERHUB_USERNAME }} /webapp-backend:$GITHUB_SHA
+          deployment_name: backend-deployment
+          container_name: backend       
+      
 
   api-tests-prod:
     name: API Tests on PROD
