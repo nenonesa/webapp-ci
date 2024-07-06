@@ -54,19 +54,22 @@ jobs:
         run: |
           kubectl set image deployment/backend-deployment backend=nenonesa/webapp-backend:latest
           kubectl rollout restart deployment/backend-deployment
-          
+
   api-tests-prod:
     name: API Tests on PROD
     runs-on: self-hosted
     needs: [deploy-prod]
     steps:
-      - name: Test Step
-        run: echo "Test step"
+      - name: Run API tests on PROD
+        run: |
+          docker pull nenonesa/api-tests:latest
+          docker run --rm --network=host --name api-tests-prod nenonesa/api-tests:latest cucumber PLATFORM=PRD
   rollback-backend:
     name: Backend rollback on PROD
     needs: [api-tests-prod]
     runs-on: self-hosted
     steps:
-      - name: Test Step
-        run: echo "Test step"
+      - name: Rollback for the Backend (PROD)
+        run: |
+          kubectl rollout undo deployments backend-deployment
 
