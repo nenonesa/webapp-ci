@@ -18,7 +18,7 @@ function App() {
 
   return (
     <div>
-      <h1>Data from Backend -v7</h1>
+      <h1>Data from Backend -v8</h1>
       <ul>
         {data.map(item => (
           <li key={item.id}>{item.name}</li>
